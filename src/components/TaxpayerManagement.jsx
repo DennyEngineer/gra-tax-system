@@ -2,6 +2,21 @@ import { useState, useEffect } from "react";
 import { db } from "../firebase";
 import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc, onSnapshot } from "firebase/firestore";
 
+// GRA color scheme
+const colors = {
+  primary: "#006837", // GRA Green
+  secondary: "#FFC72C", // GRA Gold/Yellow
+  accent: "#00A651", // Lighter green
+  dark: "#333333", // Dark gray
+  light: "#F5F5F5", // Light background
+  white: "#FFFFFF",
+  gray: "#718096",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  lightGray: "#E2E8F0",
+};
+
 function TaxpayerManagement() {
   const [taxpayers, setTaxpayers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -300,13 +315,26 @@ function TaxpayerManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-800 to-indigo-900 pt-20">
-      <div className="max-w-7xl mx-auto p-6">
+    <div className="min-h-screen bg-white">
+      <div className="border-b border-gray-200" style={{ backgroundColor: colors.primary }}>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center">
+          <h1 className="text-xl font-bold text-white flex items-center">
+            <svg viewBox="0 0 24 24" width="24" height="24" className="mr-2">
+              <rect width="24" height="24" fill={colors.primary} />
+              <path d="M5,5 L19,5 L19,19 L5,19 Z" fill={colors.secondary} />
+              <circle cx="12" cy="12" r="4" fill={colors.primary} />
+            </svg>
+            Ghana Revenue Authority
+          </h1>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 pt-8 pb-16">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
-            <h1 className="text-3xl font-extrabold text-white">Taxpayer Management</h1>
-            <p className="text-base text-gray-300 mt-2">Add, edit, or remove taxpayers</p>
+            <h2 className="text-2xl font-bold" style={{ color: colors.dark }}>Taxpayer Management</h2>
+            <p className="text-sm text-gray-600 mt-1">Add, edit, or remove taxpayers</p>
           </div>
           <div className="mt-4 sm:mt-0 flex items-center space-x-4">
             <button
@@ -315,7 +343,8 @@ function TaxpayerManagement() {
                 setFormData({ name: "", region: "", taxType: "", taxAmount: "", year: "2025", contact: "", idNumber: "" });
                 setShowModal(true);
               }}
-              className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-teal-500 rounded-lg hover:from-green-600 hover:to-teal-600 focus:ring-2 focus:ring-green-500 flex items-center transform hover:scale-[1.02] transition-all"
+              className="px-4 py-2 text-sm font-medium text-white rounded-md flex items-center transition-colors hover:bg-warning"
+              style={{ backgroundColor: colors.success }}
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -324,7 +353,8 @@ function TaxpayerManagement() {
             </button>
             <button
               onClick={exportToCSV}
-              className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:ring-2 focus:ring-blue-500 flex items-center transform hover:scale-[1.02] transition-all"
+              className="px-4 py-2 text-sm font-medium text-white rounded-md flex items-center transition-colors hover:bg-warning"
+              style={{ backgroundColor: colors.primary }}
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -336,7 +366,7 @@ function TaxpayerManagement() {
 
         {/* Error Display */}
         {error && (
-          <div className="mb-6 p-3 bg-red-500/20 border border-red-500 text-red-200 rounded-lg text-sm flex items-center">
+          <div className="mb-6 p-3 bg-red-100 border border-red-200 text-red-800 rounded-md text-sm flex items-center">
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
@@ -347,12 +377,12 @@ function TaxpayerManagement() {
         {/* Modal for Add/Edit */}
         {showModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 w-full max-w-md border border-white/20">
-              <h2 className="text-xl font-semibold text-white mb-4">
+            <div className="bg-white rounded-md p-6 w-full max-w-md border border-gray-200 shadow-lg">
+              <h2 className="text-lg font-semibold" style={{ color: colors.dark }}>
                 {editingTaxpayer ? "Edit Taxpayer" : "Add New Taxpayer"}
               </h2>
               {error && (
-                <div className="mb-4 p-3 bg-red-500/20 border border-red-500 text-red-200 rounded-lg text-sm flex items-center">
+                <div className="my-4 p-3 bg-red-100 border border-red-200 text-red-800 rounded-md text-sm flex items-center">
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
@@ -361,107 +391,108 @@ function TaxpayerManagement() {
               )}
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-300">Full Name *</label>
+                  <label className="block text-sm font-medium text-gray-700">Full Name *</label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full bg-white/10 border border-white/20 rounded-lg p-2 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 backdrop-blur-md"
+                    className="mt-1 block w-full bg-white border border-gray-300 rounded-md p-2 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                     required
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-300">Region *</label>
+                  <label className="block text-sm font-medium text-gray-700">Region *</label>
                   <select
                     name="region"
                     value={formData.region}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full bg-white/10 border border-white/20 rounded-lg p-2 text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 backdrop-blur-md"
+                    className="mt-1 block w-full bg-white border border-gray-300 rounded-md p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                     required
                   >
-                    <option value="" className="bg-gray-900">Select Region</option>
+                    <option value="">Select Region</option>
                     {regionsList.map((region) => (
-                      <option key={region} value={region} className="bg-gray-900">{region}</option>
+                      <option key={region} value={region}>{region}</option>
                     ))}
                   </select>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-300">Tax Type *</label>
+                  <label className="block text-sm font-medium text-gray-700">Tax Type *</label>
                   <select
                     name="taxType"
                     value={formData.taxType}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full bg-white/10 border border-white/20 rounded-lg p-2 text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 backdrop-blur-md"
+                    className="mt-1 block w-full bg-white border border-gray-300 rounded-md p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                     required
                   >
-                    <option value="" className="bg-gray-900">Select Tax Type</option>
+                    <option value="">Select Tax Type</option>
                     {taxTypes.map((type) => (
-                      <option key={type} value={type} className="bg-gray-900">
+                      <option key={type} value={type}>
                         {type === "salary" ? "Income Taxpayer" : type === "eVat" ? "E-VAT Taxpayer" : "Other Taxpayer"}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-300">Tax Amount (GHS) *</label>
+                  <label className="block text-sm font-medium text-gray-700">Tax Amount (GHS) *</label>
                   <input
                     type="number"
                     name="taxAmount"
                     value={formData.taxAmount}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full bg-white/10 border border-white/20 rounded-lg p-2 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 backdrop-blur-md"
+                    className="mt-1 block w-full bg-white border border-gray-300 rounded-md p-2 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                     required
                     min="0"
                     step="0.01"
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-300">Year *</label>
+                  <label className="block text-sm font-medium text-gray-700">Year *</label>
                   <select
                     name="year"
                     value={formData.year}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full bg-white/10 border border-white/20 rounded-lg p-2 text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 backdrop-blur-md"
+                    className="mt-1 block w-full bg-white border border-gray-300 rounded-md p-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                     required
                   >
-                    <option value="" className="bg-gray-900">Select Year</option>
+                    <option value="">Select Year</option>
                     {yearsList.map((year) => (
-                      <option key={year} value={year} className="bg-gray-900">{year}</option>
+                      <option key={year} value={year}>{year}</option>
                     ))}
                   </select>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-300">Contact (Optional)</label>
+                  <label className="block text-sm font-medium text-gray-700">Contact (Optional)</label>
                   <input
                     type="text"
                     name="contact"
                     value={formData.contact}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full bg-white/10 border border-white/20 rounded-lg p-2 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 backdrop-blur-md"
+                    className="mt-1 block w-full bg-white border border-gray-300 rounded-md p-2 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-300">ID Number (Optional)</label>
+                  <label className="block text-sm font-medium text-gray-700">ID Number (Optional)</label>
                   <input
                     type="text"
                     name="idNumber"
                     value={formData.idNumber}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full bg-white/10 border border-white/20 rounded-lg p-2 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 backdrop-blur-md"
+                    className="mt-1 block w-full bg-white border border-gray-300 rounded-md p-2 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                   />
                 </div>
                 <div className="flex justify-end space-x-3">
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-300 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-teal-500 rounded-lg hover:from-green-600 hover:to-teal-600 focus:ring-2 focus:ring-green-500 transform hover:scale-[1.02] transition-all"
+                    className="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors hover:bg-warning"
+                    style={{ backgroundColor: colors.success }}
                   >
                     {editingTaxpayer ? "Update" : "Add"}
                   </button>
@@ -472,11 +503,11 @@ function TaxpayerManagement() {
         )}
 
         {/* Taxpayers Table */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-xl shadow-xl border border-white/20 overflow-hidden">
-          <div className="px-6 py-4 border-b border-white/20 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+        <div className="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden">
+          <div className="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div>
-              <h2 className="text-xl font-semibold text-white">Taxpayers List</h2>
-              <p className="text-sm text-gray-300 mt-1">Manage all registered taxpayers</p>
+              <h2 className="text-lg font-semibold" style={{ color: colors.dark }}>Taxpayers List</h2>
+              <p className="text-sm text-gray-500 mt-1">Manage all registered taxpayers</p>
             </div>
             <div className="mt-4 sm:mt-0 flex items-center space-x-3">
               <div className="relative">
@@ -493,12 +524,12 @@ function TaxpayerManagement() {
                   placeholder="Search taxpayers..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-10 py-2 text-sm bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 backdrop-blur-md"
+                  className="pl-10 pr-10 py-2 text-sm bg-white border border-gray-300 rounded-md text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
                 />
                 {searchQuery && (
                   <button
                     onClick={clearSearch}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -509,33 +540,33 @@ function TaxpayerManagement() {
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-white/20">
-              <thead className="bg-white/5">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
                 <tr>
                   {[
                     "Name", "Region", "Tax Type", "Tax Amount (GHS)", "Year", "Contact", "ID Number", "Actions"
                   ].map((header) => (
                     <th
                       key={header}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {header}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/20">
+              <tbody className="bg-white divide-y divide-gray-200">
                 {filteredTaxpayers.length > 0 ? (
                   filteredTaxpayers.map((taxpayer) => (
-                    <tr key={taxpayer.id} className="hover:bg-white/10 transition-colors">
+                    <tr key={taxpayer.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-white">{taxpayer.name}</div>
+                        <div className="text-sm font-medium" style={{ color: colors.dark }}>{taxpayer.name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-white">{taxpayer.region}</div>
+                        <div className="text-sm" style={{ color: colors.dark }}>{taxpayer.region}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-white">
+                        <div className="text-sm" style={{ color: colors.dark }}>
                           {taxpayer.taxType === "salary"
                             ? "Income Taxpayer"
                             : taxpayer.taxType === "eVat"
@@ -544,21 +575,22 @@ function TaxpayerManagement() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-white">{taxpayer.taxAmount.toLocaleString()}</div>
+                        <div className="text-sm" style={{ color: colors.dark }}>{taxpayer.taxAmount.toLocaleString()}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-white">{taxpayer.year}</div>
+                        <div className="text-sm" style={{ color: colors.dark }}>{taxpayer.year}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-white">{taxpayer.contact || "-"}</div>
+                        <div className="text-sm" style={{ color: colors.dark }}>{taxpayer.contact || "-"}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-white">{taxpayer.idNumber || "-"}</div>
+                        <div className="text-sm" style={{ color: colors.dark }}>{taxpayer.idNumber || "-"}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
                           onClick={() => handleEdit(taxpayer)}
-                          className="text-blue-400 hover:text-blue-300 mr-4"
+                          className="mr-4"
+                          style={{ color: colors.primary }}
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -566,7 +598,7 @@ function TaxpayerManagement() {
                         </button>
                         <button
                           onClick={() => handleDelete(taxpayer)}
-                          className="text-red-400 hover:text-red-300"
+                          style={{ color: colors.danger }}
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4M4 7h16" />
@@ -577,7 +609,7 @@ function TaxpayerManagement() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-400">
+                    <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">
                       {searchQuery ? `No taxpayers found matching "${searchQuery}"` : "No taxpayers registered"}
                     </td>
                   </tr>
@@ -585,14 +617,15 @@ function TaxpayerManagement() {
               </tbody>
             </table>
           </div>
-          <div className="px-6 py-4 border-t border-white/20 bg-white/5 flex items-center justify-between">
-            <div className="text-sm text-gray-300">
+          <div className="p-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
+            <div className="text-sm text-gray-700">
               Showing <span className="font-medium">1</span> to <span className="font-medium">{filteredTaxpayers.length}</span> of{" "}
               <span className="font-medium">{taxpayers.length}</span> taxpayers
             </div>
             <button
               onClick={exportToCSV}
-              className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:ring-2 focus:ring-blue-500 flex items-center transform hover:scale-[1.02] transition-all"
+              className="px-4 py-2 text-sm font-medium text-white rounded-md flex items-center transition-colors hover:bg-warning"
+              style={{ backgroundColor: colors.primary }}
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -602,12 +635,24 @@ function TaxpayerManagement() {
           </div>
         </div>
       </div>
-      {/* Decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
-        <div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-500 rounded-full filter blur-3xl opacity-20"></div>
-        <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-500 rounded-full filter blur-3xl opacity-20"></div>
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-indigo-500 rounded-full filter blur-3xl opacity-10"></div>
-      </div>
+
+      <footer className="py-6 border-t border-gray-200" style={{ backgroundColor: colors.primary }}>
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center">
+              <svg viewBox="0 0 24 24" width="24" height="24" className="mr-2">
+                <rect width="24" height="24" fill={colors.primary} />
+                <path d="M5,5 L19,5 L19,19 L5,19 Z" fill={colors.secondary} />
+                <circle cx="12" cy="12" r="4" fill={colors.primary} />
+              </svg>
+              <span className="text-white text-sm">Ghana Revenue Authority © {new Date().getFullYear()}</span>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <span className="text-white text-sm">Dashboard last updated: {new Date().toLocaleDateString()}</span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
